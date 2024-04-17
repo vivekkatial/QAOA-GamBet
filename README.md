@@ -19,6 +19,25 @@ pip install QAOAKit
 python -m QAOAKit.build_tables
 ```
 
+### Installation using Docker file
+```
+docker build -t qaoakit .
+```
+
+### Interacting with FastAPI Server
+
+To get the FastAPI server running, you can use the following command (in development):
+
+```
+uvicorn QAOAKit.api:app --reload
+```
+
+or if you have Docker installed, you can use the following command (the .env file is required for the server to run as it should contain your credentials):
+
+```
+docker run -d --name <container_name> -p 8000:80 --env-file .env qaoakit
+```
+
 ### Example
 
 ```python

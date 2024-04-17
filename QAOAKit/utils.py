@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 from functools import partial
-from qiskit.providers.aer import AerSimulator
+from qiskit_aer import AerSimulator
 import json
 import re
 import warnings
@@ -209,20 +209,37 @@ def opt_angles_for_graph(G, p):
     if G.number_of_nodes() <= 9 and p <= 3:
         graph2angles = lookup_table_handler.get_graph2angles()
         graph_id = get_graph_id(G)
-        return copy.deepcopy(graph2angles[G.number_of_nodes()][p][graph_id])
+        angles = copy.deepcopy(graph2angles[G.number_of_nodes()][p][graph_id])
+        # Add field for indicating optimal_angles True and source is lookup table
+        angles["optimal_angles"] = True
+        angles["source"] = "lookup_table"
+        return angles
     elif nx.is_regular(G) and G.number_of_nodes() <= 16 and G.degree[0] == 3 and p <= 2:
         row = get_3_reg_dataset_table_row(G, p)
-        return {"beta": row["beta"], "gamma": row["gamma"]}
+        angles = {"beta": row["beta"], "gamma": row["gamma"]}
+        angles["optimal_angles"] = True
+        angles["source"] = "lookup_table"
+        return angles
     elif nx.is_regular(G) and p <= 11:
         d = G.degree[0]
         warnings.warn(
             f"Optimal angles not available, returning fixed angles for {d}-regular graphs"
         )
-        return get_fixed_angles(d, p)
+        angles = get_fixed_angles(d, p)
+        angles["optimal_angles"] = False
+        angles["source"] = "fixed_angle_regular_graphs"
+        return 
     elif p <= 11:
         warnings.warn("Optimal angles not available, returning closest fixed angles")
         d_ave = int(round(2 * G.number_of_edges() / G.number_of_nodes()))
-        return get_fixed_angles(d_ave, p)
+        angles = get_fixed_angles(d_ave, p)
+        if angles is None:
+            raise ValueError(
+                f"Parameters for average degree {d_ave} and p = {p} are not available"
+            )
+        angles["optimal_angles"] = False
+        angles["source"] = "fixed_angle angles"
+        return angles 
     else:
         raise NotImplementedError(
             f"Parameters for p > 11 are not available; requested p = {p}"
@@ -231,8 +248,11 @@ def opt_angles_for_graph(G, p):
 
 def get_fixed_angles(d, p):
     row = get_fixed_angle_dataset_table_row(d, p)
-    angles = {"beta": row.beta, "gamma": row.gamma}
-    return angles
+    if row is None:
+        return None
+    else:
+        angles = {"beta": row.beta, "gamma": row.gamma}
+        return angles
 
 
 def get_full_qaoa_dataset_table():
@@ -254,10 +274,13 @@ def get_fixed_angle_dataset_table():
 def get_fixed_angle_dataset_table_row(d, p):
     df = lookup_table_handler.get_fixed_angle_dataset_table()
     row = df[(df["d"] == d) & (df["p"] == p)]
-    assert len(row) == 1
-    row = row.squeeze()
-    assert isinstance(row, pd.Series)
-    return row
+    # Return None if no row found
+    if len(row) == 0:
+        return None
+    else:
+        row = row.squeeze()
+        assert isinstance(row, pd.Series)
+        return row
 
 
 def get_full_qaoa_dataset_table_row(G, p):
@@ -400,7 +423,7 @@ def load_results_file_into_dataframe(n_qubits, p):
             utils_folder,
             f"../data/qaoa-dataset-version1/Results/p={p}/n={n_qubits}_p={p}.txt",
         ),
-        delim_whitespace=True,
+        sep='\s+',
         names=colnames,
         header=None,
     )
