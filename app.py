@@ -6,6 +6,9 @@ import networkx as nx
 import numpy as np
 import os
 from dotenv import load_dotenv
+import logging
+
+logging.basicConfig(level=logging.WARNING)
 
 load_dotenv()  # Load environment variables from .env file
 
@@ -34,9 +37,9 @@ class OptimalAnglesDTO(BaseModel):
     p: int = Field(..., example=1, description="Number of QAOA layers for the calculation.")
 
 def authenticate_user(credentials: HTTPBasicCredentials = Depends(security)):
-    username = os.getenv('QAOAKIT_AUTH_USERNAME')
-    password = os.getenv('QAOAKIT_AUTH_PASSWORD')
-    if credentials.username != username or credentials.password != password:
+    correct_username = os.getenv('BASIC_AUTH_USERNAME', 'default_user')
+    correct_password = os.getenv('BASIC_AUTH_PASSWORD', 'default_password')
+    if credentials.username != correct_username or credentials.password != correct_password:
         raise HTTPException(status_code=401, detail="Unauthorized")
     return credentials.username
 

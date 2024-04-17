@@ -27,10 +27,10 @@ ENV CPPFLAGS="-I/usr/include/suitesparse"
 
 COPY . /app
 
-RUN pip install --no-cache-dir -e .
-
+RUN pip install .
 # Build QAOAKit Tables
 RUN python -m QAOAKit.build_tables
+
 
 # Make port 80 available
 EXPOSE 80
