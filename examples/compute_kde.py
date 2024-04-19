@@ -24,5 +24,5 @@ p = int(sys.argv[1])
 outpath = f"../data/pretrained_models/kde_n=9_p={p}_large_bandwidth_range.p"
 print("Outpath: ", outpath)
 # Adjust number of jobs as needed
-median, kde = train_kde(p, 9, n_jobs=20, bandwidth_range=np.logspace(-4, 1, 40))
+median, kde = train_kde(p, 9, n_jobs=-1, bandwidth_range=np.logspace(-4, 1, 40))
 pickle.dump((median, kde), open(outpath, "wb"))

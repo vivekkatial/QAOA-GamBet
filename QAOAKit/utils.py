@@ -13,7 +13,7 @@ import warnings
 
 from QAOAKit.qaoa import get_maxcut_qaoa_circuit
 
-utils_folder = Path(__file__).parent
+utils_folder = Path(__file__).parent.parent
 
 
 class LookupTableHandler:
@@ -73,7 +73,7 @@ class LookupTableHandler:
     def get_full_qaoa_dataset_table(self):
         if self.full_qaoa_dataset_table is None:
             self.full_qaoa_dataset_table = pd.read_pickle(
-                Path(utils_folder, "../data/lookup_tables/full_qaoa_dataset_table.p")
+                Path(utils_folder, "data/lookup_tables/full_qaoa_dataset_table.p")
             ).set_index(["pynauty_cert", "p_max"])
         return self.full_qaoa_dataset_table
 
@@ -228,7 +228,7 @@ def opt_angles_for_graph(G, p):
         angles = get_fixed_angles(d, p)
         angles["optimal_angles"] = False
         angles["source"] = "fixed_angle_regular_graphs"
-        return 
+        return angles
     elif p <= 11:
         warnings.warn("Optimal angles not available, returning closest fixed angles")
         d_ave = int(round(2 * G.number_of_edges() / G.number_of_nodes()))

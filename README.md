@@ -35,7 +35,11 @@ uvicorn QAOAKit.api:app --reload
 or if you have Docker installed, you can use the following command (the .env file is required for the server to run as it should contain your credentials):
 
 ```
-docker run -d --name <container_name> -p 8000:80 --env-file .env qaoakit
+docker run -d -p 80:5000 \
+    -v $(pwd):/app \
+    --env-file .env \
+    --name myapi qaoakit-api \
+    uvicorn app:app --host 0.0.0.0 --port 80 --reload
 ```
 
 ### Example

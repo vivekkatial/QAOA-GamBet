@@ -64,9 +64,11 @@ def train_kde(p, n, n_jobs=1, bandwidth_range=np.logspace(-2, 1, 20)):
     median = np.median(data, axis=0)
 
     print(f"Fitting a KDE model on data of shape {data.shape}")
+    
+    # Sample the data to be 1% of the total data
     # use grid search cross-validation to optimize the bandwidth
     params = {"bandwidth": bandwidth_range}
-    grid = GridSearchCV(KernelDensity(), params, n_jobs=n_jobs)
+    grid = GridSearchCV(KernelDensity(), params, n_jobs=n_jobs, verbose=1)
     grid.fit(data)
 
     print(
