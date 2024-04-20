@@ -44,14 +44,14 @@ class LookupTableHandler:
     def get_graph2angles(self):
         if self.graph2angles is None:
             self.graph2angles = pickle.load(
-                open(Path(utils_folder, f"../data/lookup_tables/graph2angles.p"), "rb")
+                open(Path(utils_folder, f"data/lookup_tables/graph2angles.p"), "rb")
             )
         return self.graph2angles
 
     def get_graph2pynauty(self):
         if self.graph2pynauty is None:
             self.graph2pynauty = pickle.load(
-                open(Path(utils_folder, f"../data/lookup_tables/graph2pynauty.p"), "rb")
+                open(Path(utils_folder, f"data/lookup_tables/graph2pynauty.p"), "rb")
             )
         return self.graph2pynauty
 
@@ -63,7 +63,7 @@ class LookupTableHandler:
                 open(
                     Path(
                         utils_folder,
-                        f"../data/lookup_tables/graph2pynauty_large_{nqubits}.p",
+                        f"/data/lookup_tables/graph2pynauty_large_{nqubits}.p",
                     ),
                     "rb",
                 )

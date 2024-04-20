@@ -5,19 +5,29 @@ import networkx as nx
 def send_graph_for_optimal_angles():
 
     #    url = "http://115.146.94.114:5000/graph/optimal_angles"
-    url = "http://localhost:8000/graph/optimal_angles"
+    url = "http://localhost:8000"
+    endpoints = [
+        "/graph/QAOAKit/optimal_angles_kde",
+        "/graph/QAOAKit/optimal_angles_lookup",
+        "/graph/QIBPI/optimal_angles",
+        "/graph/random_initialisation",
+    ]
 
-    for i in range(100):
+    for endpoint in endpoints:
+        print(f"Sending request to {url}{endpoint}")
+        send_request(url + endpoint)
+
+def send_request(url):
+    for i in range(1):
         # Generate a random graph from networkx
         G = nx.random_regular_graph(3, 8)
-        # Generate watts_strogatz_graph
-        # G = nx.watts_strogatz_graph(8, 3, 0.1)
         adjacency_matrix = nx.to_numpy_array(G).tolist()
-        # adjacency_matrix = [[0.0, -1.0, 0.0, 0.0], [-1.0, 0.0, 0.0, 1.0], [0.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0]]
-
         p = 1
 
-        data = json.dumps({"adjacency_matrix": adjacency_matrix, "p": p})
+        data = json.dumps({"adjacency_matrix": adjacency_matrix, "p": p,})
+
+        if "QIBPI" in url:
+            data = json.dumps({"adjacency_matrix": adjacency_matrix, "p": p, "instance_class": "three_regular_graph"})
         headers = {'Content-Type': 'application/json'}
         
         # Set username and password for Basic Authentication
