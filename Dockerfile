@@ -33,8 +33,8 @@ RUN python -m QAOAKit.build_tables
 
 
 # Make port 80 available
-EXPOSE 80
+EXPOSE 5000
 
 ENV NAME QAOAKit
 
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "80"]
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "5000"]

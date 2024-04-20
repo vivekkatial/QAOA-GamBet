@@ -5,7 +5,7 @@ import networkx as nx
 def send_graph_for_optimal_angles():
 
     #    url = "http://115.146.94.114:5000/graph/optimal_angles"
-    url = "http://localhost:8000"
+    url = "http://localhost:80"
     endpoints = [
         "/graph/QAOAKit/optimal_angles_kde",
         "/graph/QAOAKit/optimal_angles_lookup",
