@@ -31,6 +31,10 @@ RUN pip install .
 # Build QAOAKit Tables
 RUN python -m QAOAKit.build_tables
 
+# Copy trained models into the app folders
+COPY ./kde_n=9_p=1_large_bandwidth_range.p /app/data/pretrained_models/kde_n=9_p=1_large_bandwidth_range.p
+COPY ./optimal-parameters.csv /app/data/optimal-parameters.csv
+
 
 # Make port 80 available
 EXPOSE 5000
