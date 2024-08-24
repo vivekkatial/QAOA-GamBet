@@ -1,4 +1,4 @@
 #!bin/bash
 
 # Build the container
-docker build -t qaoakit-app .
+docker build -t qaoa-param-server .
