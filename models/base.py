@@ -1,6 +1,6 @@
 from enum import Enum
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, List
 
 class InstanceClass(Enum):
     UNIFORM_RANDOM = "uniform_random"
@@ -10,19 +10,22 @@ class InstanceClass(Enum):
     THREE_REGULAR_GRAPH = "three_regular_graph"
     FOUR_REGULAR_GRAPH = "four_regular_graph"
     NEARLY_COMPLETE_BIPARTITE = "nearly_complete_bi_partite"
+    
+class WeightType(Enum):
+    WEIGHTED = "weighted"
+    UNWEIGHTED = "unweighted"
 
 class GraphDTO(BaseModel):
     instance_id: int
     adjacency_matrix: list
-
-class OptimalAnglesDTO(BaseModel):
-    adjacency_matrix: list = Field(..., example=[[0, 1], [1, 0]])
-    p: int = Field(1, example=1)
-    instance_class: Optional[str] = Field(None, example="Uniform Random", description="The instance class.")
-    t_max: Optional[float] = Field(1.0, example=1.0, description="Total annealing time for TQA initialization.")
     
 class OptimalAnglesResponseDTO(BaseModel):
-    beta: list = Field(..., example=[0.1])
-    gamma: list = Field(..., example=[0.2])
+    beta: List[float] = Field(..., example=[0.1])
+    gamma: List[float] = Field(..., example=[0.2])
     optimal_angles: bool = Field(False, example=False)
     source: str = Field("Strategy", example="Example")
+    
+class BaseQAOADTO(BaseModel):
+    adjacency_matrix: List[List[int]] = Field(..., example=[[0, 1], [1, 0]])
+    p: int = Field(1, example=1, description="Number of QAOA layers")
+    

@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException, Body, Depends
 from fastapi.security import HTTPBasic
 import numpy as np
-from models import OptimalAnglesDTO, OptimalAnglesResponseDTO
+from models.dto import RandomInitializationDTO
+from models.base import OptimalAnglesResponseDTO
 from utils.auth import authenticate_user
 
 router = APIRouter()
@@ -15,7 +16,7 @@ router = APIRouter()
                  400: {"description": "Invalid input data."},
                  500: {"description": "Server error during angle calculation."}},
              dependencies=[Depends(authenticate_user)])
-def get_random_initialisation(optimal_angles_dto: OptimalAnglesDTO = Body(...)):
+def get_random_initialisation(dto: RandomInitializationDTO = Body(...)):
     """
     Endpoint to calculate the random initialisation QAOA angles from a given adjacency matrix and QAOA layers.
 
@@ -29,7 +30,7 @@ def get_random_initialisation(optimal_angles_dto: OptimalAnglesDTO = Body(...)):
     """
     try:
         # extract number of layers from input
-        p = optimal_angles_dto.p
+        p = dto.p
         # Beta should be between -pi/4 and pi/4
         beta = np.random.uniform(-np.pi/4, np.pi/4, p)
         # Gamma should be between -pi and pi

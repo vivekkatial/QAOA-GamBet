@@ -1,7 +1,9 @@
 from fastapi import APIRouter, HTTPException, Body, Depends
 from fastapi.security import HTTPBasic
 import pandas as pd
-from models import OptimalAnglesDTO, OptimalAnglesResponseDTO, InstanceClass
+from models.base import OptimalAnglesResponseDTO, InstanceClass 
+from models.dto import QIBPIDTO
+
 from utils.auth import authenticate_user
 
 router = APIRouter()
@@ -47,13 +49,13 @@ def get_optimal_parameters(source, n_layers, df):
                  500: {"description": "Server error during angle calculation."}
              },
              dependencies=[Depends(authenticate_user)])
-def get_optimal_angles_qibpi(optimal_angles_dto: OptimalAnglesDTO = Body(...)):
+def get_optimal_angles_qibpi(dto: QIBPIDTO = Body(...)):
     """
     Endpoint to calculate the optimal QIBPI angles from a given adjacency matrix, QAOA layers, and instance class.
     """
     try:
-        source = optimal_angles_dto.instance_class
-        n_layers = optimal_angles_dto.p
+        source = dto.instance_class
+        n_layers = dto.p
         if source is None:
             raise ValueError("Instance class is required.")
         else:

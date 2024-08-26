@@ -28,6 +28,10 @@ ENV CPPFLAGS="-I/usr/include/suitesparse"
 COPY . /app
 
 RUN pip install .
+
+# Install development dependencies
+RUN pip install uvicorn[standard] watchfiles
+
 # Build QAOAKit Tables
 RUN python -m QAOAKit.build_tables
 
@@ -35,10 +39,12 @@ RUN python -m QAOAKit.build_tables
 COPY ./kde_n=9_p=1_large_bandwidth_range.p /app/data/pretrained_models/kde_n=9_p=1_large_bandwidth_range.p
 COPY ./optimal-parameters.csv /app/data/optimal-parameters.csv
 
-
-# Make port 80 available
+# Make port 5000 available
 EXPOSE 5000
 
 ENV NAME QAOAKit
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "5000"]
+# Create and use an entrypoint script
+COPY bin/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]

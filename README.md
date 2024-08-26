@@ -16,19 +16,23 @@ We thank the authors of the following papers for their work on QAOA:
 
 1. Clone the repository:
 
-```
+```bash
 git clone https://github.com/vivekkatial/QAOA-Param-Server.git
 cd QAOA-Param-Server
 ```
 
 2. Build the Docker image:
-```
+```bash
 docker build -t qaoa-param-server .
 ```
 
 3. Run the Docker container:
 
-```
+```bash
+# Run in development mode
+docker run -p 5000:5000 -v $(pwd):/app -e DEV_MODE=true qaoa-param-server
+
+# Run in production mode
 docker run -p 5000:5000 qaoa-param-server
 ```
 

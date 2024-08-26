@@ -6,7 +6,8 @@ import numpy as np
 from QAOAKit import opt_angles_for_graph, angles_to_qaoa_format, beta_to_qaoa_format, gamma_to_qaoa_format
 from QAOAKit.parameter_optimization import get_median_pre_trained_kde
 
-from models import OptimalAnglesDTO, OptimalAnglesResponseDTO
+from models.base import OptimalAnglesResponseDTO
+from models.dto import QAOAKitKDEDTO, QAOAKitLookupDTO
 from utils.auth import authenticate_user
 
 router = APIRouter()
@@ -21,12 +22,12 @@ router = APIRouter()
                  500: {"description": "Server error during angle calculation."}
              },
              dependencies=[Depends(authenticate_user)])
-def get_optimal_angles_kde(optimal_angles_dto: OptimalAnglesDTO = Body(...)):
+def get_optimal_angles_kde(dto: QAOAKitKDEDTO = Body(...)):
     try:
-        adjacency_matrix = np.array(optimal_angles_dto.adjacency_matrix)
+        adjacency_matrix = np.array(dto.adjacency_matrix)
         G = nx.from_numpy_array(adjacency_matrix)
         graph = G
-        qaoa_depth = optimal_angles_dto.p
+        qaoa_depth = dto.p
 
         d_w = 0
         no_nodes = 0
@@ -67,14 +68,14 @@ def get_optimal_angles_kde(optimal_angles_dto: OptimalAnglesDTO = Body(...)):
                  500: {"description": "Server error during angle calculation."}
              },
              dependencies=[Depends(authenticate_user)])
-def get_optimal_angles_lookup(optimal_angles_dto: OptimalAnglesDTO = Body(...)):
+def get_optimal_angles_lookup(dto: QAOAKitLookupDTO = Body(...)):
     """
     Endpoint to calculate the optimal QAOA angles from a given adjacency matrix and QAOA layers.
     """
     try:
-        adjacency_matrix = np.array(optimal_angles_dto.adjacency_matrix)
+        adjacency_matrix = np.array(dto.adjacency_matrix)
         G = nx.from_numpy_array(adjacency_matrix)
-        angles = opt_angles_for_graph(G, p=optimal_angles_dto.p)
+        angles = opt_angles_for_graph(G, p=dto.p)
         qaoa_angles = angles_to_qaoa_format(angles)
         qaoa_angles['beta'] = qaoa_angles['beta'].tolist()
         qaoa_angles['gamma'] = qaoa_angles['gamma'].tolist()
