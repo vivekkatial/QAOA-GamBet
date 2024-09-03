@@ -18,7 +18,7 @@ def send_graph_for_optimal_angles(data):
 
 def send_request(url, data):
     headers = {'Content-Type': 'application/json'}
-    auth = ('admin', 'gmkit123')  # Basic Authentication credentials
+    auth = ('admin', 'test123')  # Basic Authentication credentials
     
     # Send the request
     response = requests.post(url, headers=headers, data=data, auth=auth)

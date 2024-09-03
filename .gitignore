@@ -145,3 +145,5 @@ data/lookup_tables/full_qaoa_dataset_table.p
 data/
 
 .DS_Store
+
+repopack-output.txt
