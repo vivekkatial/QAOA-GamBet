@@ -54,6 +54,51 @@ docker run -p 5000:5000 qaoa-param-server
 
 The API will be available at `http://localhost:5000`.
 
+## Authentication
+
+QAOA-Param-Server uses Basic Authentication to secure the API endpoints. To access the API, you need to provide a username and password with each request.
+
+### Setting up Authentication
+
+1. Create a `.env` file in the root directory of the project.
+2. Add the following lines to the `.env` file:
+
+```
+BASIC_AUTH_USERNAME=your_username
+BASIC_AUTH_PASSWORD=your_password
+```
+
+Replace `your_username` and `your_password` with your desired credentials.
+
+### Using Authentication in Requests
+
+When making requests to the API, you need to include the authentication credentials. Here's an example using Python's `requests` library:
+
+```python
+import requests
+
+url = "http://localhost:5000/graph/QAOAKit/optimal_angles_lookup"
+data = {
+    "adjacency_matrix": [[0, 1], [1, 0]],
+    "p": 1
+}
+
+response = requests.post(
+    url,
+    json=data,
+    auth=('your_username', 'your_password')
+)
+
+if response.status_code == 200:
+    print("Success:", response.json())
+else:
+    print("Error:", response.status_code, response.text)
+```
+
+Make sure to replace `'your_username'` and `'your_password'` with the actual credentials you set in the `.env` file.
+
+**Note**: Keep your `.env` file secure and never commit it to version control. Add it to your `.gitignore` file to prevent accidental commits.
+
 ## Usage
 
 Here's a basic example of how to use the QAOA-Param-Server API:
