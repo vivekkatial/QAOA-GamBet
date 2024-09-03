@@ -23,6 +23,11 @@ router = APIRouter()
              },
              dependencies=[Depends(authenticate_user)])
 def get_optimal_angles_kde(dto: QAOAKitKDEDTO = Body(...)):
+    """
+    QAOAKit is a toolkit for Reproducible Application and Verification of QAOA.
+    
+    To read more about the QAOAKit method [checkout the paper](https://www.computer.org/csdl/proceedings-article/qcs/2021/867400a064/1zxKuwgiuLS)
+    """
     try:
         adjacency_matrix = np.array(dto.adjacency_matrix)
         G = nx.from_numpy_array(adjacency_matrix)

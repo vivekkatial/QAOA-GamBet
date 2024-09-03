@@ -26,15 +26,16 @@ def get_tqa_initialisation(dto: TQADTO = Body(...)):
     The TQA initialisation angles are generated as follows:
 
     $$beta_i = (1 - \\frac{t_i}{t_{max}}) \cdot \Delta t$$
-
     $$gamma_i$$ = \\frac{t_i}{t_{max}} \cdot \Delta t$$
 
     Where:
     * $t_i$ is the time at step i
     * $t_{max}$ is the total annealing time
-    * $\\Delta t$ is the time step
+    * $\Delta t$ is the time step
 
     The number of layers and total annealing time are extracted from the input.
+    
+    To read more about the TQA method checkout the paper: https://arxiv.org/abs/2101.05742
     """
     try:
         # Extract number of layers and total annealing time from input

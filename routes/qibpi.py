@@ -52,6 +52,8 @@ def get_optimal_parameters(source, n_layers, df):
 def get_optimal_angles_qibpi(dto: QIBPIDTO = Body(...)):
     """
     Endpoint to calculate the optimal QIBPI angles from a given adjacency matrix, QAOA layers, and instance class.
+    
+    To read more about the QIBPI method checkout the paper: https://arxiv.org/abs/2401.08142
     """
     try:
         source = dto.instance_class
