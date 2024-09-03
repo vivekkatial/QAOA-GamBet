@@ -7,6 +7,7 @@ import networkx as nx
 
 class InstanceClass(Enum):
     UNIFORM_RANDOM = "uniform_random"
+    ERDOS_RENYI = "erdos_renyi"
     WATTS_STROGATZ_SMALL_WORLD = "watts_strogatz_small_world"
     GEOMETRIC = "geometric"
     POWER_LAW_TREE = "power_law_tree"

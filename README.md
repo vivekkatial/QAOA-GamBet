@@ -54,6 +54,7 @@ docker run -p 5000:5000 qaoa-param-server
 
 The API will be available at `http://localhost:5000`.
 
+
 ## Authentication
 
 QAOA-Param-Server uses Basic Authentication to secure the API endpoints. To access the API, you need to provide a username and password with each request.
@@ -72,22 +73,20 @@ Replace `your_username` and `your_password` with your desired credentials.
 
 ### Using Authentication in Requests
 
-When making requests to the API, you need to include the authentication credentials. Here's an example using Python's `requests` library:
+When making requests to the API, you need to include the authentication credentials. Here's an example using Python's `requests` library and the `QIBPI` endpoint:
 
 ```python
 import requests
 
-url = "http://localhost:5000/graph/QAOAKit/optimal_angles_lookup"
+url = "http://localhost:5000/graph/QIBPI/optimal_angles"
 data = {
-    "adjacency_matrix": [[0, 1], [1, 0]],
-    "p": 1
+    "adjacency_matrix": [[0.0, 0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 1.0, 0.0, 0.0], [0.0, 1.0, 0.0, 1.0, 0.0], [1.0, 0.0, 1.0, 0.0, 1.0], [0.0, 0.0, 0.0, 1.0, 0.0]], 
+    "p": 3,
+    "graph_type": "uniform_random",
+    "weight_type": "uniform"
 }
 
-response = requests.post(
-    url,
-    json=data,
-    auth=('your_username', 'your_password')
-)
+response = requests.post(url, json=data, auth=('admin', 'gmkit123'))
 
 if response.status_code == 200:
     print("Success:", response.json())
@@ -115,7 +114,7 @@ adjacency_matrix = nx.to_numpy_array(G).tolist()
 # Prepare the request data
 data = {
     "adjacency_matrix": adjacency_matrix,
-    "p": 1,
+    "p": 3,
     "instance_class": "three_regular_graph"
 }
 
@@ -123,7 +122,7 @@ data = {
 response = requests.post(
     "http://localhost:5000/graph/QAOAKit/optimal_angles_lookup",
     json=data,
-    auth=('admin', 'test123')  # Replace with your actual credentials
+    auth=('username', 'password')  # Replace with your actual credentials
 )
 
 if response.status_code == 200:

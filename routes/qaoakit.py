@@ -62,30 +62,3 @@ def get_optimal_angles_kde(dto: QAOAKitKDEDTO = Body(...)):
         raise HTTPException(status_code=400, detail=str(ve))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-@router.post("/graph/QAOAKit/optimal_angles_lookup", response_model=OptimalAnglesResponseDTO, tags=["QAOAKit"],
-             summary="Get Optimal Angles from QAOAKit using the Lookup Table", 
-             response_description="The optimal beta and gamma angles for the QAOA algorithm based on the QAOAKit Lookup Table.",
-             responses={
-                 200: {"description": "Successfully calculated and returned the optimal angles.",
-                       "content": {"application/json": {"example": {"beta": [0.1], "gamma": [0.2], "optimal_angles": False, "source": "QAOAKit_Lookup"}}}},
-                 400: {"description": "Invalid input data."},
-                 500: {"description": "Server error during angle calculation."}
-             },
-             dependencies=[Depends(authenticate_user)])
-def get_optimal_angles_lookup(dto: QAOAKitLookupDTO = Body(...)):
-    """
-    Endpoint to calculate the optimal QAOA angles from a given adjacency matrix and QAOA layers.
-    """
-    try:
-        adjacency_matrix = np.array(dto.adjacency_matrix)
-        G = nx.from_numpy_array(adjacency_matrix)
-        angles = opt_angles_for_graph(G, p=dto.p)
-        qaoa_angles = angles_to_qaoa_format(angles)
-        qaoa_angles['beta'] = qaoa_angles['beta'].tolist()
-        qaoa_angles['gamma'] = qaoa_angles['gamma'].tolist()
-        return OptimalAnglesResponseDTO(**qaoa_angles, source="QAOAKit_Lookup", optimal_angles=True)
-    except ValueError as ve:
-        raise HTTPException(status_code=400, detail=str(ve))
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
