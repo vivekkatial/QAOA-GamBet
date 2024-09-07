@@ -48,7 +48,7 @@ async def custom_redoc():
     <!DOCTYPE html>
     <html>
     <head>
-        <title>QAOA Angle Generator API - ReDoc</title>
+        <title>QAOA Angle Generator API</title>
         <!-- Favicon -->
         <link rel="icon" type="image/png" href="/static/favicon.png">
         <!-- needed for adaptive design -->

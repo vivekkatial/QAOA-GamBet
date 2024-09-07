@@ -1,3 +1,5 @@
+![QAOA-Param-Server Logo](static/logo.png)
+
 # QAOA-Param-Server: API for QAOA Parameter Optimization
 
 ![Build Status](https://github.com/vivekkatial/QAOA-Param-Server/actions/workflows/main.yml/badge.svg)

@@ -4,8 +4,8 @@ import networkx as nx
 import numpy as np
 
 # Server configuration
-BASE_URL = "http://localhost:5000"
-AUTH = ('user', 'password')  # Replace with your actual credentials
+BASE_URL = "http://localhost:8080"
+AUTH = ('admin', 'gmkit123')  # Replace with your actual credentials
 
 # Helper function to create a random graph
 def create_random_graph(n, p):
@@ -57,7 +57,7 @@ def test_qibpi():
         "graph_type": "uniform_random",
         "weight_type": "uniform"
     }
-    result = make_request("/graph/QIBPI/optimal_angles", data)
+    result = make_request("/graph/QIBPI", data)
     if result:
         print(f"QIBPI angles: Beta = {result['beta']}, Gamma = {result['gamma']}")
 
@@ -78,7 +78,7 @@ def test_fixed_angles():
     print("\nTesting Fixed Angles:")
     data = {
         "adjacency_matrix": create_random_graph(5, 0.5),
-        "p": 2,
+        "p": 5,
         "beta": 0.1,
         "gamma": 0.2
     }
