@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QAOA Angle Generator API</title>
+    <link rel="icon" type="image/png" href="/static/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #000000;
+            color: #d7f2ff;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+            background-color: rgba(0, 36, 72, 0.8);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(145, 209, 255, 0.786);
+            position: relative;
+            z-index: 1;
+        }
+        h1 {
+            color: #b9e6ee;
+            text-shadow: 0 0 5px #00d8ff;
+        }
+        .btn {
+            display: inline-block;
+            background: #ffffff;
+            color: #001830;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 1rem;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #b3e5fc;
+            color: #001830;
+            box-shadow: 0 0 10px #00b8ff;
+        }
+        #quantum-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        .social-links {
+            margin-top: 1.5rem;
+        }
+        .social-btn {
+            display: inline-flex;
+            align-items: center;
+            background: #004b6b;
+            color: #b9e6ee;
+            padding: 0.3rem 0.8rem;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 0.5rem;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        .social-btn:hover {
+            background: #006d9e;
+            box-shadow: 0 0 10px #00b8ff;
+        }
+        .social-btn svg {
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="quantum-canvas"></canvas>
+    <div class="container">
+        <h1>QAOA Parameter Setting API</h1>
+        <p>Access our QAOA Parameter Setting API.</p>
+        <a href="/redoc" class="btn">Explore API Documentation</a>
+        <!-- Updated social and contact links -->
+        <div class="social-links">
+            <a href="https://github.com/vivekkatial/QAOA-param-server" target="_blank" class="social-btn">
+                <svg height="20" width="20" viewBox="0 0 16 16" version="1.1" fill="currentColor">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+                GitHub
+            </a>
+            <a href="mailto:vivekkatial@gmail.com" class="social-btn">
+                <svg height="20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 4H4C2.9 4 2.01 4.9 2.01 6L2 18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 8L12 13L4 8V6L12 11L20 6V8Z" fill="currentColor"/>
+                </svg>
+                Email
+            </a>
+            <a href="https://arxiv.org/abs/2401.08142" target="_blank" class="social-btn">
+                <svg height="20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2ZM16 18H8V16H16V18ZM16 14H8V12H16V14ZM13 9V3.5L18.5 9H13Z" fill="currentColor"/>
+                </svg>
+                Paper
+            </a>
+        </div>
+        </div>
+    </div>
+    <script>
+        const canvas = document.getElementById('quantum-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const cols = 100;
+        const rows = 100;
+        const field = new Array(cols).fill(null).map(() => new Array(rows).fill(0));
+
+        let mouseX = 0;
+        let mouseY = 0;
+
+        function drawField() {
+            ctx.strokeStyle = 'rgba(0, 216, 255, 0.3)';
+            ctx.lineWidth = 1;
+
+            for (let x = 0; x < cols; x++) {
+                ctx.beginPath();
+                for (let y = 0; y < rows; y++) {
+                    const value = field[x][y];
+                    const dx = (x / cols) * canvas.width;
+                    const dy = (y / rows) * canvas.height;
+                    const dz = Math.sin(value) * 20;
+
+                    if (y === 0) {
+                        ctx.moveTo(dx, dy + dz);
+                    } else {
+                        ctx.lineTo(dx, dy + dz);
+                    }
+                }
+                ctx.stroke();
+            }
+
+            for (let y = 0; y < rows; y++) {
+                ctx.beginPath();
+                for (let x = 0; x < cols; x++) {
+                    const value = field[x][y];
+                    const dx = (x / cols) * canvas.width;
+                    const dy = (y / rows) * canvas.height;
+                    const dz = Math.sin(value) * 20;
+
+                    if (x === 0) {
+                        ctx.moveTo(dx, dy + dz);
+                    } else {
+                        ctx.lineTo(dx, dy + dz);
+                    }
+                }
+                ctx.stroke();
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const time = Date.now() * 0.0002;
+            for (let x = 0; x < cols; x++) {
+                for (let y = 0; y < rows; y++) {
+                    const distX = x - mouseX;
+                    const distY = y - mouseY;
+                    const dist = Math.sqrt(distX * distX + distY * distY);
+                    const maxDist = Math.sqrt(cols * cols + rows * rows);
+                    const factor = 1 - Math.min(dist / maxDist, 1);
+                    
+                    field[x][y] = Math.sin(x * 0.1 + time) + Math.sin(y * 0.1 + time) + factor * 2;
+                }
+            }
+
+            drawField();
+            requestAnimationFrame(animate);
+        }
+
+        canvas.addEventListener('mousemove', (event) => {
+            const rect = canvas.getBoundingClientRect();
+            mouseX = Math.floor((event.clientX - rect.left) / canvas.width * cols);
+            mouseY = Math.floor((event.clientY - rect.top) / canvas.height * rows);
+        });
+
+        animate();
+    </script>
+</body>
+</html>

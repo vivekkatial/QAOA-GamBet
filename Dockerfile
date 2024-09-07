@@ -32,7 +32,7 @@ RUN pip install .
 # Install development dependencies
 RUN pip install uvicorn[standard] watchfiles
 
-# Build QAOAKit Tables
+# Build QAOAKit Tables for that package dependncies
 RUN python -m QAOAKit.build_tables
 
 # Copy trained models into the app folders
@@ -41,8 +41,6 @@ COPY ./optimal-parameters.csv /app/data/optimal-parameters.csv
 
 # Make port 5000 available
 EXPOSE 5000
-
-ENV NAME QAOAKit
 
 # Create and use an entrypoint script
 COPY bin/entrypoint.sh /entrypoint.sh
