@@ -1,4 +1,4 @@
-![QAOA-Param-Server Logo](static/logo.png)
+<img src="static/logo.png" alt="QAOA-Param-Server Logo" width="300">
 
 # QAOA-Param-Server: API for QAOA Parameter Optimization
 
