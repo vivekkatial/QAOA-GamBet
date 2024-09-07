@@ -4,6 +4,8 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.95.1-009688.svg?style=flat&logo=FastAPI&logoColor=white)](https://fastapi.tiangolo.com)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/release/python-390/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![Build Status](https://github.com/vivekkatial/QAOA-Param-Server/actions/workflows/main.yml/badge.svg)
+
 
 QAOA-Param-Server is a FastAPI-based server providing optimized parameters for the Quantum Approximate Optimization Algorithm (QAOA). It offers a simple API to obtain optimal parameters for a given graph and to optimize graphs using QAOA.
 
