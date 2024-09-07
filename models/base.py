@@ -30,8 +30,8 @@ class GraphDTO(BaseModel):
 class OptimalAnglesResponseDTO(BaseModel):
     beta: List[float] = Field(..., example=[0.1])
     gamma: List[float] = Field(..., example=[0.2])
-    optimal_angles: bool = Field(False, example=False)
-    source: str = Field("Strategy", example="Example")
+    optimal_angles: Optional[bool] = Field(None, example=False)
+    source: Optional[str] = Field("Strategy", example="Example")
 
 class BaseQAOADTO(BaseModel):
     adjacency_matrix: List[List[int]] = Field(..., example=[[0, 1], [1, 0]])
@@ -58,6 +58,3 @@ class BaseQAOADTO(BaseModel):
         if v > 100:  # Example maximum, adjust as needed
             raise ValueError("Number of QAOA layers (p) exceeds maximum allowed value")
         return v
-    
-    
-    

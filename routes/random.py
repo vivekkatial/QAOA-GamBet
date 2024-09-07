@@ -12,7 +12,7 @@ router = APIRouter()
              response_description="The random initialisation beta and gamma angles for the QAOA algorithm.",
              responses={
                  200: {"description": "Successfully calculated and returned the random initialisation angles.",
-                       "content": {"application/json": {"example": {"beta": [0.1], "gamma": [0.2], "optimal_angles": False, "source": "QAOAKit_Random"}}}},
+                       "content": {"application/json": {"example": {"beta": [0.1], "gamma": [0.2], "source": "Random"}}}},
                  400: {"description": "Invalid input data."},
                  500: {"description": "Server error during angle calculation."}},
              dependencies=[Depends(authenticate_user)])
@@ -36,7 +36,7 @@ def get_random_initialisation(dto: RandomInitializationDTO = Body(...)):
         # Gamma should be between -pi and pi
         gamma = np.random.uniform(-np.pi, np.pi, p)
         # create a dictionary to return
-        return OptimalAnglesResponseDTO(beta=list(beta), gamma=list(gamma), optimal_angles=False, source="Random")
+        return OptimalAnglesResponseDTO(beta=list(beta), gamma=list(gamma), source="Random")
     except ValueError as ve:
         raise HTTPException(status_code=400, detail=str(ve))
     except Exception as e:

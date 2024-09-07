@@ -1,51 +1,42 @@
-name: Tests
-
+name: Quantum FastAPI Docker CI
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
+  build-and-test:
+    runs-on: ubuntu-latest
 
-    strategy:
-      max-parallel: 5
-      matrix:
-        os: [ubuntu-latest, macos-latest]
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v2
+    - uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Cache Docker layers
+      uses: actions/cache@v3
       with:
-        python-version: 3.8
-    - name: Add conda to system path
+        path: /tmp/.buildx-cache
+        key: ${{ runner.os }}-buildx-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-
+
+    - name: Build Docker image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: false
+        load: true
+        tags: fastapi-app:latest
+        cache-from: type=local,src=/tmp/.buildx-cache
+        cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+
+    - name: Move cache
       run: |
-        # $CONDA is an environment variable pointing to the root of the miniconda directory
-        echo $CONDA/bin >> $GITHUB_PATH
-    - name: Add Mac install dir to system path
-      run: |
-        echo "/Users/runner/.local/bin" >> $GITHUB_PATH
-    - name: Install dependencies
-      run: |
-        pip install -e .
-    - name: qtensor
-      run: |
-        cd $RUNNER_TEMP
-        git clone --recurse-submodules https://github.com/DaniloZZZ/QTensor
-        cd QTensor
-        cd qtree && pip install .
-        cd .. && pip install .
-        cd
-    - name: Load data
-      run: |
-        python -m QAOAKit.build_tables
-    - name: test
-      run: |
-        pytest
-    - name: check linter
-      run: |
-        pip install pre-commit
-        pre-commit install
-        pre-commit run --all-files
+        rm -rf /tmp/.buildx-cache
+        mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+
+    # Add more test steps as needed

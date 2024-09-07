@@ -6,7 +6,6 @@ import math
 
 
 class RandomInitializationDTO(BaseQAOADTO):
-    # No additional fields required
     pass
 
 class QAOAKitBaseDTO(BaseQAOADTO):
@@ -46,10 +45,24 @@ class QIBPIDTO(BaseQAOADTO):
         return v
 
     class Config:
-        use_enum_values = True  # This will use the string values of enums in JSON
+        use_enum_values = True
         
 class TQADTO(BaseQAOADTO):
     t_max: float = Field(..., example=1.0, description="Total annealing time for TQA initialization")
+    
+    # Validate t_max is greater than 0 
+    @validator('t_max')
+    def validate_t_max(cls, v):
+        if v <= 0:
+            raise ValueError("Total annealing time (t_max) must be positive")
+        return v
+    
+    @validator('p')
+    def validate_p(cls, v):
+        if v <= 0:
+            raise ValueError("Number of layers (p) must be positive")
+        return v
+    
     
 class FixedAnglesDTO(BaseQAOADTO):
     beta: float = Field(..., example=0.1, description="The fixed beta angle for QAOA")

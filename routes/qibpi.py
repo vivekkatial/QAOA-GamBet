@@ -15,12 +15,12 @@ def get_optimal_parameters(source, n_layers, df):
     """Get optimal parameters for a given source and number of layers."""
     # Check if the dataframe is empty
     if df.empty:
-        return "No data available."
+        raise ValueError("No data available.")
 
     # Check if the source is valid
     allowed_sources = [src.value for src in InstanceClass]
     if source not in allowed_sources:
-        return "Invalid source. Please choose from the allowed values."
+        raise ValueError("Invalid source. Please choose from the allowed values.")
 
     # Filter the dataframe for the specific source and number of layers
     filtered_df = df[(df['Source'] == source) & (df['params.n_layers'] == n_layers)]
@@ -30,21 +30,26 @@ def get_optimal_parameters(source, n_layers, df):
         beta_values = [filtered_df.iloc[0]['median_beta_' + str(i)] for i in range(1, n_layers + 1)]
         gamma_values = [filtered_df.iloc[0]['median_gamma_' + str(i)] for i in range(1, n_layers + 1)]
 
-        params = {
-            'beta': beta_values,
-            'gamma': gamma_values,
-            'Source': source,
-            'params.n_layers': n_layers,
-        }
-        return OptimalAnglesResponseDTO(beta=params["beta"], gamma=params["gamma"], source="QIBPI", optimal_angles=False)
+        return OptimalAnglesResponseDTO(beta=beta_values, gamma=gamma_values, source="QIBPI")
     else:
-        return "No data available for the specified source and number of layers."
+        raise ValueError("No data available for the specified source and number of layers.")
 
-@router.post("/graph/QIBPI/optimal_angles", response_model=OptimalAnglesResponseDTO, tags=["QIBPI"],
+@router.post("/graph/QIBPI", response_model=OptimalAnglesResponseDTO, tags=["QIBPI"],
              summary="Get Optimal Angles from QIBPI",
              response_description="The optimal beta and gamma angles for the QIBPI algorithm.",
              responses={
-                 200: {"description": "Successfully calculated and returned the optimal angles."},
+                 200: {
+                     "description": "Successfully calculated and returned the optimal angles.",
+                     "content": {
+                         "application/json": {
+                             "example": {
+                                 "beta": [0.1, 0.2, 0.3],
+                                 "gamma": [0.4, 0.5, 0.6],
+                                 "source": "QIBPI"
+                             }
+                         }
+                     }
+                 },
                  400: {"description": "Invalid input data."},
                  500: {"description": "Server error during angle calculation."}
              },
@@ -57,19 +62,11 @@ def get_optimal_angles_qibpi(dto: QIBPIDTO = Body(...)):
     """
     try:
         source = dto.graph_type
-        n_layers = dto.p
-        if source is None:
-            raise ValueError("Instance class is required.")
-        
+        n_layers = dto.p        
         if source == "erdos_renyi":
             source = "uniform_random"
             
-        params = get_optimal_parameters(source, n_layers, df)
-
-        if isinstance(params, str):
-            raise ValueError(params)
-
-        return params
+        return get_optimal_parameters(source, n_layers, df)
     except ValueError as ve:
         raise HTTPException(status_code=400, detail=str(ve))
     except Exception as e:

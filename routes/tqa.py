@@ -12,7 +12,7 @@ router = APIRouter()
              response_description="The TQA initialisation beta and gamma angles for the QAOA algorithm.",
              responses={
                  200: {"description": "Successfully calculated and returned the TQA initialisation angles.",
-                       "content": {"application/json": {"example": {"beta": [0.1, 0.2, 0.3, 0.4], "gamma": [0.4, 0.3, 0.2, 0.1], "optimal_angles": False, "source": "TQA"}}}},
+                       "content": {"application/json": {"example": {"beta": [0.1, 0.2, 0.3, 0.4], "gamma": [0.4, 0.3, 0.2, 0.1], "source": "TQA"}}}},
                  400: {"description": "Invalid input data."},
                  500: {"description": "Server error during angle calculation."}
              },
@@ -24,29 +24,23 @@ def get_tqa_initialisation(dto: TQADTO = Body(...)):
     These angles are generated using the Trotterised Quantum Annealing schedule and can be used as an initial guess for the QAOA algorithm.
 
     The TQA initialisation angles are generated as follows:
-
-    $$beta_i = (1 - \\frac{t_i}{t_{max}}) \cdot \Delta t$$
-    $$gamma_i$$ = \\frac{t_i}{t_{max}} \cdot \Delta t$$
+    
+    * beta_i = (1 - t_i / t_{max}) * dt
+    * gamma_i = (t_i / t_{max}) * dt
 
     Where:
-    * $t_i$ is the time at step i
-    * $t_{max}$ is the total annealing time
-    * $\Delta t$ is the time step
+    * t_i is the time at step i
+    * t_{max} is the total annealing time
+    * dt is the time step
 
     The number of layers and total annealing time are extracted from the input.
     
-    To read more about the TQA method checkout the paper: https://arxiv.org/abs/2101.05742
+    To read more about the TQA method checkout the paper by Sack et al.: https://arxiv.org/abs/2101.05742
     """
     try:
         # Extract number of layers and total annealing time from input
         p = dto.p
         t_max = dto.t_max
-
-        # Validate inputs
-        if p <= 0:
-            raise ValueError("Number of layers (p) must be positive.")
-        if t_max <= 0:
-            raise ValueError("Total annealing time (t_max) must be positive.")
         
         # Calculate time step
         dt = t_max / p
@@ -62,7 +56,6 @@ def get_tqa_initialisation(dto: TQADTO = Body(...)):
         return OptimalAnglesResponseDTO(
             beta=list(beta),
             gamma=list(gamma),
-            optimal_angles=False,
             source="TQA"
         )
     except ValueError as ve:
