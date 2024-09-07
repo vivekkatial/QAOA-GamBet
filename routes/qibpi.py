@@ -1,38 +1,34 @@
-from fastapi import APIRouter, HTTPException, Body, Depends
-from fastapi.security import HTTPBasic
+import os
 import pandas as pd
+from fastapi import APIRouter, HTTPException, Body, Depends
 from models.base import OptimalAnglesResponseDTO, InstanceClass 
 from models.dto import QIBPIDTO
-
 from utils.auth import authenticate_user
 
 router = APIRouter()
 
-# Read from the CSV file
-df = pd.read_csv('data/optimal-parameters.csv')
+# Directory containing QIBPI CSV files
+qibpi_dir = 'qibpi/'
 
-def get_optimal_parameters(source, n_layers, df):
-    """Get optimal parameters for a given source and number of layers."""
-    # Check if the dataframe is empty
-    if df.empty:
-        raise ValueError("No data available.")
+def get_optimal_parameters(source, weight_type, n_layers):
+    # Read in the CSV file for the given layer
+    qibpi_data = pd.read_csv(qibpi_dir + f'qibpi_data_{n_layers}.csv')
+    # Filter the dataframe for the given source and weight type
+    filtered_df = qibpi_data[(qibpi_data['graph_type'] == source) & (qibpi_data['weight_type'] == weight_type)]
+    # Extract the row as a dictionary
+    params = filtered_df.iloc[0].to_dict()
+    # Extract beta and gamma valuescr
+    betas = [params[f'median_beta_{i}'] for i in range(n_layers)]
+    gammas = [params[f'median_gamma_{i}'] for i in range(n_layers)]
 
-    # Check if the source is valid
-    allowed_sources = [src.value for src in InstanceClass]
-    if source not in allowed_sources:
-        raise ValueError("Invalid source. Please choose from the allowed values.")
-
-    # Filter the dataframe for the specific source and number of layers
-    filtered_df = df[(df['Source'] == source) & (df['params.n_layers'] == n_layers)]
-
-    # Check if the filtered dataframe is not empty
-    if not filtered_df.empty:
-        beta_values = [filtered_df.iloc[0]['median_beta_' + str(i)] for i in range(1, n_layers + 1)]
-        gamma_values = [filtered_df.iloc[0]['median_gamma_' + str(i)] for i in range(1, n_layers + 1)]
-
-        return OptimalAnglesResponseDTO(beta=beta_values, gamma=gamma_values, source="QIBPI")
-    else:
-        raise ValueError("No data available for the specified source and number of layers.")
+    # Create and return the OptimalAnglesResponseDTO
+    return OptimalAnglesResponseDTO(
+        beta=betas,
+        gamma=gammas,
+        source="QIBPI",
+        optimal_angles=False
+    )
+    return filtered_df
 
 @router.post("/graph/QIBPI", response_model=OptimalAnglesResponseDTO, tags=["QIBPI"],
              summary="Get Optimal Angles from QIBPI",
@@ -43,8 +39,8 @@ def get_optimal_parameters(source, n_layers, df):
                      "content": {
                          "application/json": {
                              "example": {
-                                 "beta": [0.1, 0.2, 0.3],
-                                 "gamma": [0.4, 0.5, 0.6],
+                                 "beta": [0.1, 0.2],
+                                 "gamma": [0.4, 0.5],
                                  "source": "QIBPI"
                              }
                          }
@@ -62,11 +58,22 @@ def get_optimal_angles_qibpi(dto: QIBPIDTO = Body(...)):
     """
     try:
         source = dto.graph_type
-        n_layers = dto.p        
-        if source == "erdos_renyi":
-            source = "uniform_random"
+        n_layers = dto.p
+        weight_type = dto.weight_type
+        if source == "erdos_renyi" or source == "uniform_random":
+            source = "Uniform Random"
+        elif source == "watts_strogatz_small_world":
+            source = "Watts-Strogatz small world"
+        elif source == "three_regular_graph":
+            source = "3-Regular Graph"
+        elif source == "four_regular_graph":
+            source = "4-Regular Graph"
+        elif source == "nearly_complete_bipartite":
+            source = "Nearly Complete BiPartite"
+        elif source == "power_law_tree":
+            source = "Power Law Tree"
             
-        return get_optimal_parameters(source, n_layers, df)
+        return get_optimal_parameters(source, weight_type, n_layers)
     except ValueError as ve:
         raise HTTPException(status_code=400, detail=str(ve))
     except Exception as e:
