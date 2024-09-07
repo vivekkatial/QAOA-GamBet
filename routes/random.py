@@ -23,8 +23,8 @@ def get_random_initialisation(dto: RandomInitializationDTO = Body(...)):
     These angles are randomly generated and can be used as an initial guess for the QAOA algorithm.
 
     The random initialisation angles are generated as follows:
-    - Beta_i should be between [-pi/4, pi/4]
-    - Gamma_i should be between [-pi, pi]
+    - beta_i should be between [-pi/4, pi/4]
+    - gamma_i should be between [-pi, pi]
 
     The number of layers is extracted from the input.
     """

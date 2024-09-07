@@ -12,7 +12,7 @@ router = APIRouter()
              response_description="This returns fixed values of beta and gamma angles for the QAOA algorithm for a specific layer depth $p$.",
              responses={
                  200: {"description": "Successfully calculated and returned the fixed angles initialisation values.",
-                       "content": {"application/json": {"example": {"beta": [0.1, 0.1], "gamma": [0.2, 0.2], "optimal_angles": False, "source": "QAOAKit_Random"}}}},
+                       "content": {"application/json": {"example": {"beta": [0.1, 0.1], "gamma": [0.2, 0.2], "optimal_angles": False, "source": "Fixed Angles"}}}},
                  400: {"description": "Invalid input data."},
                  500: {"description": "Server error during angle calculation."}},
              dependencies=[Depends(authenticate_user)])
@@ -20,8 +20,8 @@ def get_fixed_angles_constant(dto: FixedAnglesDTO = Body(...)):
     """
     Endpoint to serve fixed angles for QAOA.
 
-    - Beta_i should be between [-pi/4, pi/4]
-    - Gamma_i should be between [-pi, pi]
+    - beta_i should be between [-pi/4, pi/4]
+    - gamma_i should be between [-pi, pi]
 
     The number of layers is extracted from the input.
     """
@@ -34,7 +34,7 @@ def get_fixed_angles_constant(dto: FixedAnglesDTO = Body(...)):
         gamma = [0.2] * p
         
         # create a dictionary to return
-        return OptimalAnglesResponseDTO(beta=list(beta), gamma=list(gamma), optimal_angles=False, source="Constant")
+        return OptimalAnglesResponseDTO(beta=list(beta), gamma=list(gamma), optimal_angles=False, source="Fixed Angles")
     except ValueError as ve:
         raise HTTPException(status_code=400, detail=str(ve))
     except Exception as e:
