@@ -82,6 +82,5 @@ class FixedAnglesDTO(BaseQAOADTO):
     
     
 class INTERPInitDTO(BaseQAOADTO):
-    gamma: List[float] = Field(..., description="Optimized gamma angles for the current level")
-    beta: List[float] = Field(..., description="Optimized beta angles for the current level")
-    
+    gamma: List[float] = Field(..., example=[0.1, 0.2], description="Optimized gamma angles for the current level")
+    beta: List[float] = Field(..., example=[0.3, 0.4], description="Optimized beta angles for the current level")

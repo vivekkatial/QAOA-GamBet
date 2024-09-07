@@ -12,7 +12,7 @@ router = APIRouter()
              response_description="The INTERP initialisation beta and gamma angles for the next QAOA level.",
              responses={
                  200: {"description": "Successfully calculated and returned the INTERP initialisation angles for the next level.",
-                       "content": {"application/json": {"example": {"beta": [0.1, 0.2, 0.3], "gamma": [0.4, 0.3, 0.2], "source": "INTERP"}}}},
+                       "content": {"application/json": {"example": {"beta": [0.1, 0.15, 0.2], "gamma": [0.3, 0.35, 0.4], "source": "INTERP"}}}},
                  400: {"description": "Invalid input data."},
                  500: {"description": "Server error during angle calculation."}
              },

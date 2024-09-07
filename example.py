@@ -91,9 +91,9 @@ def test_interp():
     print("\nTesting INTERP:")
     data = {
         "adjacency_matrix": create_random_graph(10, 0.5),
-        "p": 4,
-        "beta": [0.1, 0.2, 0.3],
-        "gamma": [0.4, 0.5, 0.6]
+        "p": 3,
+        "beta": [0.1, 0.2,],
+        "gamma": [0.3, 0.4]
     }
     result = make_request("/graph/interp", data)
     if result:
