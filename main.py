@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routes import qaoakit, qibpi, random, tqa, constant
+from routes import qaoakit, qibpi, random, tqa, constant, interp
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.openapi.utils import get_openapi
@@ -22,6 +22,7 @@ app.include_router(qibpi.router)
 app.include_router(qaoakit.router)
 app.include_router(tqa.router)
 app.include_router(constant.router)
+app.include_router(interp.router)
 
 # TODO: If you want to add more routers, add them here.
 # e.g. app.include_router(interp.router)
@@ -35,6 +36,12 @@ def custom_openapi():
         description="This API provides various methods for generating QAOA (Quantum Approximate Optimization Algorithm) angles.",
         routes=app.routes,
     )
+
+    # Add logo to the OpenAPI schema
+    openapi_schema["info"]["x-logo"] = {
+        "url": "/static/logo.png",
+        "altText": "QAOA Angle Generator API Logo"
+    }
 
     app.openapi_schema = openapi_schema
     return app.openapi_schema
@@ -61,9 +68,16 @@ async def custom_redoc():
                 margin: 0;
                 padding: 0;
             }
+            .logo {
+                padding: 20px;
+                max-width: 200px;
+                margin: 0 auto;
+                display: block;
+            }
         </style>
     </head>
     <body>
+        <img src="/static/logo.png" alt="QAOA Angle Generator API Logo" class="logo">
         <redoc spec-url="/openapi.json"></redoc>
         <script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"></script>
     </body>

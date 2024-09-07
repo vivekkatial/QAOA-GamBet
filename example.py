@@ -85,6 +85,19 @@ def test_fixed_angles():
     result = make_request("/graph/fixed_angles", data)
     if result:
         print(f"Fixed angles: Beta = {result['beta']}, Gamma = {result['gamma']}")
+        
+# Test INTERP
+def test_interp():
+    print("\nTesting INTERP:")
+    data = {
+        "adjacency_matrix": create_random_graph(10, 0.5),
+        "p": 4,
+        "beta": [0.1, 0.2, 0.3],
+        "gamma": [0.4, 0.5, 0.6]
+    }
+    result = make_request("/graph/interp", data)
+    if result:
+        print(f"INTERP angles: Beta = {result['beta']}, Gamma = {result['gamma']}")
 
 # Run all tests
 if __name__ == "__main__":
@@ -96,5 +109,6 @@ if __name__ == "__main__":
     test_qibpi()
     test_tqa()
     test_fixed_angles()
+    test_interp()
 
     print("\nAll tests completed.")
