@@ -103,7 +103,7 @@ def get_median_pre_trained_kde(p):
     """
     kde_path = Path(
         parameter_optimization_folder,
-        f"kde_n=9_p={p}_large_bandwidth_range.p",
+        f"../kde_n=9_p={p}_large_bandwidth_range.p",
     )
     try:
         return pickle.load(open(kde_path, "rb"))

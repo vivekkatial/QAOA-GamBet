@@ -192,6 +192,7 @@ def compare_initializations():
 
     # List of initialization methods and their corresponding API endpoints
     methods = [
+        ('QAOAKit', '/graph/QAOAKit/optimal_angles_kde'),
         ('Random Initialization', '/graph/random_initialisation'),
         ('QIBPI', '/graph/QIBPI'),
         ('TQA', '/graph/tqa_initialisation'),
