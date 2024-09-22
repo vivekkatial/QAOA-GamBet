@@ -34,7 +34,7 @@ class OptimalAnglesResponseDTO(BaseModel):
     source: Optional[str] = Field("Strategy", example="Example")
 
 class BaseQAOADTO(BaseModel):
-    adjacency_matrix: List[List[int]] = Field(..., example=[[0, 1], [1, 0]])
+    adjacency_matrix: List[List[float]] = Field(..., example=[[0.0, 1.0], [1.0, 0.0]])
     p: int = Field(1, ge=1, le=100, example=1, description="Number of QAOA layers")
 
     @validator('adjacency_matrix')

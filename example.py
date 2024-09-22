@@ -2,10 +2,15 @@ import requests
 import json
 import networkx as nx
 import numpy as np
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
 # Server configuration
-BASE_URL = "http://localhost:8080"
-AUTH = ('admin', 'gmkit123')  # Replace with your actual credentials
+BASE_URL = "http://115.146.94.114:5000"
+# Read the username and password from env variables
+AUTH = (os.environ.get("BASIC_AUTH_USERNAME"), os.environ.get("BASIC_AUTH_PASSWORD"))
+print(AUTH)
 
 # Helper function to create a random graph
 def create_random_graph(n, p):
@@ -50,6 +55,7 @@ def test_qaoakit_kde():
 
 # Test QIBPI
 def test_qibpi():
+    
     print("\nTesting QIBPI:")
     data = {
         "adjacency_matrix": create_random_graph(5, 0.5),
