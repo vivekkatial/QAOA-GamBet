@@ -13,7 +13,7 @@ import warnings
 
 from QAOAKit.qaoa import get_maxcut_qaoa_circuit
 
-utils_folder = Path(__file__).parent.parent
+utils_folder = Path("/app")
 
 
 class LookupTableHandler:
@@ -72,9 +72,15 @@ class LookupTableHandler:
 
     def get_full_qaoa_dataset_table(self):
         if self.full_qaoa_dataset_table is None:
-            self.full_qaoa_dataset_table = pd.read_pickle(
-                Path(utils_folder, "data/lookup_tables/full_qaoa_dataset_table.p")
-            ).set_index(["pynauty_cert", "p_max"])
+            # Assume the data directory is directly under /app
+            file_path = Path("/app/data/lookup_tables/full_qaoa_dataset_table.p")
+            
+            if not file_path.exists():
+                raise FileNotFoundError(f"The file 'full_qaoa_dataset_table.p' could not be found. "
+                                        f"Expected location: {file_path}. "
+                                        f"Please ensure the data files are correctly mounted in the Docker container.")
+            
+            self.full_qaoa_dataset_table = pd.read_pickle(file_path).set_index(["pynauty_cert", "p_max"])
         return self.full_qaoa_dataset_table
 
     def get_full_weighted_qaoa_dataset_table(self):

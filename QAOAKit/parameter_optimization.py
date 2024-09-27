@@ -36,7 +36,8 @@ def train_kde(p, n, n_jobs=1, bandwidth_range=np.logspace(-2, 1, 20)):
     df = get_full_qaoa_dataset_table().reset_index().set_index("graph_id")
     df = df[(df["p_max"] == p) & (df["n"] == n)]
     df["average degree"] = df.apply(
-        lambda row: 2 * row["G"].number_of_edges() / row["G"].number_of_nodes(), axis=1
+        lambda row: 2 * row["G"].number_of_edges() / row["G"].number_of_nodes(),
+        axis=1
     )
 
     if p == 1:
@@ -111,3 +112,25 @@ def get_median_pre_trained_kde(p):
         raise pickle.PickleError(
             f"Failed to unpickle the pre-trained KDE at {kde_path}. Please re-train the model using QAOAKit.parameter_optimization.train_kde."
         )
+
+
+# Main function
+def main():
+    n = 8  # Number of nodes
+    p_range = range(2, 11)
+    output_dir = Path(parameter_optimization_folder, "..")
+
+    for p in p_range:
+        print(f"Training KDE for p={p} and n={n}")
+        median, kde = train_kde(p, n)
+        
+        kde_path = output_dir / f"kde_n={n}_p={p}_large_bandwidth_range.p"
+        
+        print(f"Saving KDE to {kde_path}")
+        with kde_path.open("wb") as f:
+            pickle.dump((median, kde), f)
+        
+        print(f"KDE for p={p} saved successfully\n")
+
+if __name__ == "__main__":
+    main()
