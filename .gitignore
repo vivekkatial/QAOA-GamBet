@@ -146,4 +146,5 @@ data/
 
 .DS_Store
 
-repopack-output.txt
+repopack-output.txtresults/**
+results/

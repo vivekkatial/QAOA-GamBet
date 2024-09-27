@@ -43,9 +43,11 @@ def create_three_regular_graph(n):
     
     return G
 
-def create_power_law_tree(n):
-    """Create a power-law tree with n nodes and uniform random weights."""
-    G = nx.random_powerlaw_tree(n)
+def create_watts_strogatz_small_world(n):
+    """Create a Watts-Strogatz small-world graph with n nodes and uniform random weights."""
+    k = 4  # Each node is connected to k nearest neighbors in ring topology
+    p = 0.3  # Probability of rewiring each edge
+    G = nx.watts_strogatz_graph(n, k, p)
     
     # Add uniform random weights
     for (u, v) in G.edges():
@@ -153,7 +155,7 @@ def run_qaoa_optimization(G, beta_init, gamma_init, method_name, max_cut_value):
         
         # Print optimization progress every 100 iterations
         if i % 100 == 0:
-            current_ratio = -energy / max_cut_value
+            current_ratio = -energy / (2 * max_cut_value)  # Corrected calculation
             print(f"  {method_name}: Iteration {i}, Approximation Ratio: {current_ratio:.4f}")
         
         # Check for improvement
@@ -177,7 +179,7 @@ def run_qaoa_optimization(G, beta_init, gamma_init, method_name, max_cut_value):
 
     # After optimization, compute final approximation ratio
     final_energy = cost_fn(params)
-    approximation_ratio = -final_energy / max_cut_value  # Negate the energy to make it positive
+    approximation_ratio = -final_energy / (2 * max_cut_value)  # Corrected calculation
 
     total_fevals = fevals[0]
 
@@ -187,8 +189,8 @@ def compare_initializations():
     print("Comparing QAOA Initialization Techniques Over Multiple Instances and Graph Types:")
     print("=============================================================================\n")
 
-    num_instances = 30
-    num_nodes = 10
+    num_instances = 2
+    num_nodes = 14
 
     # List of initialization methods and their corresponding API endpoints
     methods = [
@@ -203,7 +205,7 @@ def compare_initializations():
     graph_types = [
         ('Uniform-Random', create_random_graph),
         ('Three-Regular-Graph', create_three_regular_graph),
-        ('Power-Law-Tree', create_power_law_tree)
+        ('Watts-Strogatz-Small-World', create_watts_strogatz_small_world)
     ]
 
     # Dictionary to store approximation ratios and fevals over instances
@@ -345,8 +347,8 @@ def compare_initializations():
         plt.close()
 
     # Add new plots comparing across all graph types
-    graph_types = ['Uniform Random', '3-Regular', 'Power-Law Tree']
-    methods = ['Random Initialization', 'QIBPI', 'TQA', 'Fixed Angles']
+    graph_types = ['Uniform-Random', 'Three-Regular-Graph', 'Watts-Strogatz-Small-World']
+    methods = ['Random Initialization', 'QIBPI', 'TQA', 'Fixed Angles', 'QAOAKit']
     p_values = [2, 3, 4, 5, 6, 7, 8, 9, 10]
 
     # Plot average approximation ratios across all graph types
@@ -382,6 +384,45 @@ def compare_initializations():
     plt.tight_layout()
     plt.savefig(os.path.join('results', 'all_graph_types_average_function_evaluations.png'), dpi=300, bbox_inches='tight')
     plt.close()
+
+    # Add new boxplots comparing across all graph types
+    graph_types = ['Uniform-Random', 'Three-Regular-Graph', 'Watts-Strogatz-Small-World']
+    methods = ['Random Initialization', 'QIBPI', 'TQA', 'Fixed Angles', 'QAOAKit']
+    p_values = [2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+    # Create boxplots for each graph type
+    for graph_type in graph_types:
+        plt.figure(figsize=(20, 10))
+        data = []
+        labels = []
+        
+        for p in p_values:
+            p_data = []
+            for method in methods:
+                p_data.append(ar_history[graph_type][method][p])
+            data.append(p_data)
+            labels.extend([f'{method}\np={p}' for method in methods])
+        
+        bp = plt.boxplot(data, labels=labels, patch_artist=True)
+        
+        # Color each box based on the method
+        colors = plt.cm.Set3(np.linspace(0, 1, len(methods)))
+        for i, box in enumerate(bp['boxes']):
+            box.set(facecolor=colors[i % len(methods)])
+        
+        plt.xlabel('Initialization Method and QAOA Depth (p)')
+        plt.ylabel('Approximation Ratio')
+        plt.title(f'Distribution of Approximation Ratios ({graph_type})')
+        plt.xticks(rotation=90)
+        plt.grid(axis='y')
+        
+        # Add a legend
+        legend_elements = [plt.Rectangle((0,0),1,1, facecolor=colors[i], edgecolor='black') for i in range(len(methods))]
+        plt.legend(legend_elements, methods, loc='upper left', bbox_to_anchor=(1, 1))
+        
+        plt.tight_layout()
+        plt.savefig(os.path.join('results', f'{graph_type.lower().replace(" ", "_")}_approximation_ratios_boxplot.png'), dpi=300, bbox_inches='tight')
+        plt.close()
 
 if __name__ == "__main__":
     compare_initializations()
