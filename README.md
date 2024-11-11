@@ -1,15 +1,15 @@
-<img src="static/logo.png" alt="QAOA-Param-Server Logo" width="300">
+<img src="static/logo.png" alt="QAOA-GamBet Logo" width="300">
 
-# QAOA-Param-Server: API for QAOA Parameter Optimization
+# QAOA-GamBet: API for QAOA Parameter Optimization
 
-![Build Status](https://github.com/vivekkatial/QAOA-Param-Server/actions/workflows/main.yml/badge.svg)
+![Build Status](https://github.com/vivekkatial/QAOA-GamBet/actions/workflows/main.yml/badge.svg)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.109.0-009688.svg?style=flat&logo=FastAPI&logoColor=white)](https://fastapi.tiangolo.com)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/release/python-390/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 
-QAOA-Param-Server is a FastAPI-based server providing optimized parameters for the Quantum Approximate Optimization Algorithm (QAOA). It offers a simple API to obtain optimal parameters for a given graph and to optimize graphs using QAOA.
+QAOA-GamBet is a FastAPI-based server providing optimized parameters for the Quantum Approximate Optimization Algorithm (QAOA). It offers a simple API to obtain optimal parameters for a given graph and to optimize graphs using QAOA.
 
 ## Table of Contents
 
@@ -36,24 +36,24 @@ We thank the authors of the following papers for their work on QAOA:
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/vivekkatial/QAOA-Param-Server.git
-cd QAOA-Param-Server
+git clone https://github.com/vivekkatial/QAOA-GamBet.git
+cd QAOA-GamBet
 ```
 
 2. Build the Docker image:
 
 ```bash
-docker build -t qaoa-param-server .
+docker build -t QAOA-GamBet .
 ```
 
 3. Run the Docker container:
 
 ```bash
 # Run in development mode
-docker run -p 5000:5000 -v $(pwd):/app -e DEV_MODE=true qaoa-param-server
+docker run -p 5000:5000 -v $(pwd):/app -e DEV_MODE=true QAOA-GamBet
 
 # Run in production mode
-docker run -p 5000:5000 qaoa-param-server
+docker run -p 5000:5000 QAOA-GamBet
 ```
 
 The API will be available at `http://localhost:5000`.
@@ -61,7 +61,7 @@ The API will be available at `http://localhost:5000`.
 
 ## Authentication
 
-QAOA-Param-Server uses Basic Authentication to secure the API endpoints. To access the API, you need to provide a username and password with each request.
+QAOA-GamBet uses Basic Authentication to secure the API endpoints. To access the API, you need to provide a username and password with each request.
 
 ### Setting up Authentication
 
@@ -104,7 +104,7 @@ Make sure to replace `'your_username'` and `'your_password'` with the actual cre
 
 ## Usage
 
-Here's a basic example of how to use the QAOA-Param-Server API:
+Here's a basic example of how to use the QAOA-GamBet API:
 
 ```python
 import requests
@@ -138,7 +138,7 @@ else:
 
 ## API Documentation
 
-The QAOA-Param-Server provides the following main endpoints:
+The QAOA-GamBet provides the following main endpoints:
 
 - `/graph/QAOAKit/optimal_angles_kde`: Get optimal angles using KDE estimation
 - `/graph/QAOAKit/optimal_angles_lookup`: Get optimal angles using lookup table
@@ -151,7 +151,7 @@ For full API documentation, run the server and visit `http://localhost:5000/docs
 
 ## Contributing
 
-We welcome contributions to the `QAOA-Param-Server` project! Please follow these steps to contribute:
+We welcome contributions to the `QAOA-GamBet` project! Please follow these steps to contribute:
 
 1. Fork the repository
 2. Create a new branch for your feature or bug fix
