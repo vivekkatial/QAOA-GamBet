@@ -107,7 +107,7 @@ def test_interp():
 
 # Run all tests
 if __name__ == "__main__":
-    print("Testing QAOA-Param-Server Endpoints")
+    print("Testing QAOA-GamBet Endpoints")
     print("===================================")
     
     test_random_initialization()

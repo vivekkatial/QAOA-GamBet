@@ -8,8 +8,8 @@ import logging
 import os
 
 app = FastAPI(
-    title="QAOA Angle Generator API",
-    description="This API provides various methods for generating QAOA (Quantum Approximate Optimization Algorithm) angles."
+    title="QAOA GamBet API",
+    description="This API provides various methods for generating QAOA (Quantum Approximate Optimization Algorithm) angles. For more information, please refer to our paper."
 )
 
 # Mount the static files directory

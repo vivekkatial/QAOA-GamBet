@@ -1,4 +1,4 @@
 #!bin/bash
 
 # Build the container
-docker build -t qaoa-param-server .
+docker build -t QAOA-GamBet .

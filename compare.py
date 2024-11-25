@@ -174,6 +174,10 @@ def run_qaoa_optimization(G, beta_init, gamma_init, method_name, max_cut_value):
             delta_energy = abs(energy - prev_energy)
             if delta_energy < tol:
                 print(f"  {method_name}: Converged at iteration {i}")
+                # print final approximation ratio
+                final_energy = cost_fn(params)
+                approximation_ratio = -final_energy / (2 * max_cut_value)  # Corrected calculation
+                print(f"  {method_name}: Final Approximation Ratio: {approximation_ratio:.4f}")
                 break
         prev_energy = energy
 
@@ -189,7 +193,7 @@ def compare_initializations():
     print("Comparing QAOA Initialization Techniques Over Multiple Instances and Graph Types:")
     print("=============================================================================\n")
 
-    num_instances = 2
+    num_instances = 20
     num_nodes = 14
 
     # List of initialization methods and their corresponding API endpoints
